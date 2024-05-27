@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
             : ThemeSettings.lightTheme(context),
           routes: {
             "/home" :(context) => const HomeScreen(),
-            "/forgot": (context) => const forgotclass(),
+            "/forgot": (context) => ForgotPasswordScreen(),
             "/newUser": (context) => const newUserClass(),
           },
           //'/register': (context) => RegisterScreen(),

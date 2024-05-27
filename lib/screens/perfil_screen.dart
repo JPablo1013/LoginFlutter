@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wc_form_validators/wc_form_validators.dart'; 
@@ -59,6 +58,24 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   child: Icon(Icons.camera_alt), 
                 ),
               ),
+              SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: seleccionarImagen,
+                      icon: Icon(Icons.image),
+                      label: Text('Seleccionar de la galería'),
+                    ),
+                    SizedBox(width: 10),
+                    ElevatedButton.icon(
+                      onPressed: tomarFoto,
+                      icon: Icon(Icons.camera_alt),
+                      label: Text('Tomar foto'),
+                    ),
+                  ],
+                ),
+                 SizedBox(height: 20),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Nombre completo'),
                 onChanged: (value) {
@@ -66,9 +83,16 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     nombreCompleto = value;
                   });
                 },
-                validator: Validators.required('El nombre es requerido'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'El nombre es requerido';
+                  }
+                  if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+                    return 'El nombre solo puede contener letras y espacios';
+                  }
+                  return null;
+                },
               ),
-     
               TextFormField(
                 decoration: InputDecoration(labelText: 'Email'),
                 onChanged: (value) {
@@ -76,9 +100,16 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     email = value;
                   });
                 },
-                validator: Validators.email('Ingrese un correo electrónico válido'), // Validador de correo electrónico
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'El correo electrónico es requerido';
+                  }
+                  if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$').hasMatch(value)) {
+                    return 'Ingrese un correo electrónico válido';
+                  }
+                  return null;
+                },
               ),
-              // Password del usuario
               TextFormField(
                 decoration: InputDecoration(labelText: 'Password'),
                 onChanged: (value) {
@@ -86,16 +117,35 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     password = value;
                   });
                 },
-                obscureText: true, // Oculta el texto de la contraseña
-                validator: Validators.minLength(6, 'La contraseña debe tener al menos 6 caracteres'), // Validador de longitud mínima
+                obscureText: true, 
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'La contraseña es requerida';
+                  }
+                  if (!RegExp(r'^[a-zA-Z0-9]+$').hasMatch(value)) {
+                    return 'La contraseña debe contener al menos un número o una letra';
+                  }
+                  if (value.length < 6) {
+                    return 'La contraseña debe tener al menos 6 caracteres';
+                  }
+                  return null;
+                },
               ),
-             
               TextFormField(
                 decoration: InputDecoration(labelText: 'Página de GitHub'),
                 onChanged: (value) {
                   setState(() {
                     paginaGitHub = value;
                   });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'La página de GitHub es requerida';
+                  }
+                  if (!value.startsWith('github.com')) {
+                    return 'La página de GitHub debe comenzar con "github.com"';
+                  }
+                  return null;
                 },
               ),
               TextFormField(
@@ -105,13 +155,22 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     numeroTelefono = value;
                   });
                 },
-                keyboardType: TextInputType.phone, // Teclado numérico
-                validator: Validators.patternRegExp(RegExp(r'^[0-9]{10}$'), 'Ingrese un número de teléfono válido'), // Validador de número de teléfono
+                keyboardType: TextInputType.phone, 
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'El número de teléfono es requerido';
+                  }
+                  if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
+                    return 'Ingrese un número de teléfono válido';
+                  }
+                  return null;
+                },
               ),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
+                    Navigator.pop(context);
                   }
                 },
                 child: Text('Guardar'),
